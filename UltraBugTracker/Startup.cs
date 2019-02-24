@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Swashbuckle.AspNetCore.Swagger;
 using UltraBugTracker.API.Data;
 
 namespace UltraBugTracker.API
@@ -22,11 +23,19 @@ namespace UltraBugTracker.API
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddSwaggerGen(options => options.SwaggerDoc("v1", new Info { Title = "Ultra Bug Tracker" }));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseSwagger();
+
+            if (env.IsDevelopment() || env.IsStaging())
+            {
+                app.UseSwaggerUI(options => options.SwaggerEndpoint("/swagger/v1/swagger.json", "Ultra Bug Tracker v1"));
+            }
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
