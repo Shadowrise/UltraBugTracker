@@ -9,7 +9,7 @@ using UltraBugTracker.API.Data;
 
 namespace UltraBugTracker.API.Migrations
 {
-    [DbContext(typeof(ApplicationContext))]
+    [DbContext(typeof(ApplicationDbContext))]
     [Migration("20190224172420_InitialCreate")]
     partial class InitialCreate
     {

@@ -25,6 +25,6 @@ namespace UltraBugTracker.API.Models
         None,
         New,
         InProgress,
-        Fixed
+        Closed
     }
 }

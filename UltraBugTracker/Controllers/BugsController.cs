@@ -11,9 +11,9 @@ namespace UltraBugTracker.API.Controllers
     [ApiController]
     public class BugsController : ControllerBase
     {
-        private readonly ApplicationContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public BugsController(ApplicationContext context)
+        public BugsController(ApplicationDbContext context)
         {
             _context = context;
         }
