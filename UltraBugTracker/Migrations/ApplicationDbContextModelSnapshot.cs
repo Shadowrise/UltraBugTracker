@@ -4,12 +4,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using UltraBugTracker.Authentication.Data;
+using UBT.API.Data;
 
-namespace UltraBugTracker.Authentication.Migrations
+namespace UBT.API.Migrations
 {
-    [DbContext(typeof(AuthenticationDbContext))]
-    partial class AuthenticationDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(ApplicationDbContext))]
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -43,8 +43,8 @@ namespace UltraBugTracker.Authentication.Migrations
                     b.ToTable("AspNetRoles");
 
                     b.HasData(
-                        new { Id = "1", ConcurrencyStamp = "5668e045-60fd-48bf-adde-bc77e2a54929", Name = "admin" },
-                        new { Id = "2", ConcurrencyStamp = "4ba478cd-5157-41a6-af3e-c7715ec90d2d", Name = "user" }
+                        new { Id = "1", ConcurrencyStamp = "827fdbf1-4c30-435e-9382-1fccacf727b7", Name = "admin" },
+                        new { Id = "2", ConcurrencyStamp = "fe6e7e7e-b7c3-4a45-b72f-4caaa36d07ce", Name = "user" }
                     );
                 });
 
@@ -119,7 +119,8 @@ namespace UltraBugTracker.Authentication.Migrations
                     b.ToTable("AspNetUserRoles");
 
                     b.HasData(
-                        new { UserId = "1", RoleId = "1" }
+                        new { UserId = "1", RoleId = "1" },
+                        new { UserId = "2", RoleId = "2" }
                     );
                 });
 
@@ -138,7 +139,60 @@ namespace UltraBugTracker.Authentication.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("UltraBugTracker.Common.Authentication.Models.User", b =>
+            modelBuilder.Entity("UBT.Common.API.Models.Area", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Description");
+
+                    b.Property<string>("Name")
+                        .IsRequired();
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Areas");
+
+                    b.HasData(
+                        new { Id = 1, Description = "The bug doesn't fit to any other area", Name = "Unknown area" }
+                    );
+                });
+
+            modelBuilder.Entity("UBT.Common.API.Models.Bug", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("AreaId");
+
+                    b.Property<string>("AuthorId")
+                        .IsRequired();
+
+                    b.Property<DateTime>("CloseDate");
+
+                    b.Property<DateTime>("CreateDate");
+
+                    b.Property<string>("Description")
+                        .IsRequired();
+
+                    b.Property<int>("Status");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AreaId");
+
+                    b.ToTable("Bugs");
+
+                    b.HasData(
+                        new { Id = 1, AreaId = 1, AuthorId = "2", CloseDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), CreateDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), Description = "Ultra bug new", Status = 1 },
+                        new { Id = 2, AreaId = 1, AuthorId = "2", CloseDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), CreateDate = new DateTime(2000, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), Description = "Ultra bug in progress", Status = 2 },
+                        new { Id = 3, AreaId = 1, AuthorId = "2", CloseDate = new DateTime(2020, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), CreateDate = new DateTime(2000, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), Description = "Ultra bug closed", Status = 3 }
+                    );
+                });
+
+            modelBuilder.Entity("UBT.Common.Authentication.Models.User", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
@@ -189,7 +243,8 @@ namespace UltraBugTracker.Authentication.Migrations
                     b.ToTable("AspNetUsers");
 
                     b.HasData(
-                        new { Id = "1", AccessFailedCount = 0, ConcurrencyStamp = "89a146e9-f558-4393-b964-527db16338b4", EmailConfirmed = false, LockoutEnabled = false, PasswordHash = "AQAAAAEAACcQAAAAEPbE9rrZFA22CG7hN5+7bVqSZGTWsAuVBIUeDXdcOiR2p55p7Nd2ZUYqIs+5rMkRow==", PhoneNumberConfirmed = false, TwoFactorEnabled = false, UserName = "admin" }
+                        new { Id = "1", AccessFailedCount = 0, ConcurrencyStamp = "3133e8f7-8506-4e1e-921a-ec5759c747b6", Email = "some-email@nonce.fake", EmailConfirmed = true, LockoutEnabled = false, NormalizedEmail = "some-email@nonce.fake", NormalizedUserName = "admin", PasswordHash = "AQAAAAEAACcQAAAAEBDrbz5J5G9DE+TfOXkmnhdDODnVxqImvozA/bVJFlNdLLTH9Uyae9bGTUniQoPeWg==", PhoneNumberConfirmed = false, SecurityStamp = "", TwoFactorEnabled = false, UserName = "admin" },
+                        new { Id = "2", AccessFailedCount = 0, ConcurrencyStamp = "a93bb571-1160-428b-9da2-d98a377e89cd", Email = "some-email@nonce.fake", EmailConfirmed = true, LockoutEnabled = false, NormalizedEmail = "some-email@nonce.fake", NormalizedUserName = "test", PasswordHash = "AQAAAAEAACcQAAAAEI9WRcvXntvo2Ok3WNH7/vJUa0BMBjW5d7J+LvQcEC3V36KyyxRXte+nPfSBYDVCeA==", PhoneNumberConfirmed = false, SecurityStamp = "", TwoFactorEnabled = false, UserName = "test" }
                     );
                 });
 
@@ -203,7 +258,7 @@ namespace UltraBugTracker.Authentication.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("UltraBugTracker.Common.Authentication.Models.User")
+                    b.HasOne("UBT.Common.Authentication.Models.User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -211,7 +266,7 @@ namespace UltraBugTracker.Authentication.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("UltraBugTracker.Common.Authentication.Models.User")
+                    b.HasOne("UBT.Common.Authentication.Models.User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -224,7 +279,7 @@ namespace UltraBugTracker.Authentication.Migrations
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("UltraBugTracker.Common.Authentication.Models.User")
+                    b.HasOne("UBT.Common.Authentication.Models.User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -232,9 +287,17 @@ namespace UltraBugTracker.Authentication.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("UltraBugTracker.Common.Authentication.Models.User")
+                    b.HasOne("UBT.Common.Authentication.Models.User")
                         .WithMany()
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("UBT.Common.API.Models.Bug", b =>
+                {
+                    b.HasOne("UBT.Common.API.Models.Area", "Area")
+                        .WithMany("Bugs")
+                        .HasForeignKey("AreaId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

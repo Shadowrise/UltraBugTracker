@@ -9,13 +9,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Git-Windows-Minimal" Version="2.20.1" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="4.0.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\UltraBugTracker.Common\UltraBugTracker.Common.csproj" />
+    <ProjectReference Include="..\UltraBugTracker.Common\UBT.Common.csproj" />
   </ItemGroup>
 
 </Project>

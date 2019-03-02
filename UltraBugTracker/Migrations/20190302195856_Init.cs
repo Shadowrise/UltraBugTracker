@@ -2,12 +2,26 @@
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace UltraBugTracker.Authentication.Migrations
+namespace UBT.API.Migrations
 {
-    public partial class Authentication : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Areas",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(nullable: false),
+                    Description = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Areas", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
@@ -45,6 +59,30 @@ namespace UltraBugTracker.Authentication.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Bugs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Description = table.Column<string>(nullable: false),
+                    Status = table.Column<int>(nullable: false),
+                    AreaId = table.Column<int>(nullable: false),
+                    AuthorId = table.Column<string>(nullable: false),
+                    CreateDate = table.Column<DateTime>(nullable: false),
+                    CloseDate = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Bugs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Bugs_Areas_AreaId",
+                        column: x => x.AreaId,
+                        principalTable: "Areas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -153,6 +191,48 @@ namespace UltraBugTracker.Authentication.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                table: "Areas",
+                columns: new[] { "Id", "Description", "Name" },
+                values: new object[] { 1, "The bug doesn't fit to any other area", "Unknown area" });
+
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { "1", "827fdbf1-4c30-435e-9382-1fccacf727b7", "admin", null },
+                    { "2", "fe6e7e7e-b7c3-4a45-b72f-4caaa36d07ce", "user", null }
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[,]
+                {
+                    { "1", 0, "3133e8f7-8506-4e1e-921a-ec5759c747b6", "some-email@nonce.fake", true, false, null, "some-email@nonce.fake", "admin", "AQAAAAEAACcQAAAAEBDrbz5J5G9DE+TfOXkmnhdDODnVxqImvozA/bVJFlNdLLTH9Uyae9bGTUniQoPeWg==", null, false, "", false, "admin" },
+                    { "2", 0, "a93bb571-1160-428b-9da2-d98a377e89cd", "some-email@nonce.fake", true, false, null, "some-email@nonce.fake", "test", "AQAAAAEAACcQAAAAEI9WRcvXntvo2Ok3WNH7/vJUa0BMBjW5d7J+LvQcEC3V36KyyxRXte+nPfSBYDVCeA==", null, false, "", false, "test" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUserRoles",
+                columns: new[] { "UserId", "RoleId" },
+                values: new object[,]
+                {
+                    { "1", "1" },
+                    { "2", "2" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Bugs",
+                columns: new[] { "Id", "AreaId", "AuthorId", "CloseDate", "CreateDate", "Description", "Status" },
+                values: new object[,]
+                {
+                    { 1, 1, "2", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Ultra bug new", 1 },
+                    { 2, 1, "2", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2000, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Ultra bug in progress", 2 },
+                    { 3, 1, "2", new DateTime(2020, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2000, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Ultra bug closed", 3 }
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -191,6 +271,11 @@ namespace UltraBugTracker.Authentication.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Bugs_AreaId",
+                table: "Bugs",
+                column: "AreaId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -211,10 +296,16 @@ namespace UltraBugTracker.Authentication.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Bugs");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Areas");
         }
     }
 }

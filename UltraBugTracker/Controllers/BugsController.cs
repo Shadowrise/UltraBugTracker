@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using UltraBugTracker.API.Data;
-using UltraBugTracker.API.Models;
+using UBT.API.Data;
+using UBT.Common.API.Models;
 
-namespace UltraBugTracker.API.Controllers
+namespace UBT.API.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
+    [ApiController, Route("[controller]"), Authorize]
     public class BugsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -18,7 +18,6 @@ namespace UltraBugTracker.API.Controllers
             _context = context;
         }
 
-        // GET api/bugs
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Bug>>> GetAsync()
         {
@@ -26,7 +25,6 @@ namespace UltraBugTracker.API.Controllers
             return Ok(bugs);
         }
 
-        // GET api/bugs/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Bug>> GetAsync(int id)
         {
@@ -34,7 +32,6 @@ namespace UltraBugTracker.API.Controllers
             return Ok(bug);
         }
 
-        // POST api/bugs
         [HttpPost]
         public async Task<IActionResult> PostAsync([FromBody] Bug bug)
         {
@@ -49,7 +46,6 @@ namespace UltraBugTracker.API.Controllers
             return Ok();
         }
 
-        // PUT api/bugs/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutAsync(int id, [FromBody] Bug bug)
         {
@@ -69,7 +65,6 @@ namespace UltraBugTracker.API.Controllers
             return Ok();
         }
 
-        // DELETE api/bugs/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(int id)
         {

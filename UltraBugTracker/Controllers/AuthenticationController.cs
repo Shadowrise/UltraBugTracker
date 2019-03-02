@@ -1,41 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using UltraBugTracker.Authentication.Data;
-using UltraBugTracker.Common.Authentication.Models;
+using UBT.API.Data;
+using UBT.Common.Authentication.Models;
 
-namespace UltraBugTracker.Authentication.Controllers
+namespace UBT.API.Controllers
 {
-    [ApiController]
-    [Route("[controller]")]
+    [ApiController, Route("[controller]")]
     public class AuthenticationController : ControllerBase
     {
 
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
-        private readonly AuthenticationDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public AuthenticationController(AuthenticationDbContext context, UserManager<User> userManager, SignInManager<User> signInManager)
+        public AuthenticationController(ApplicationDbContext context, UserManager<User> userManager, SignInManager<User> signInManager)
         {
             _context = context;
             _userManager = userManager;
             _signInManager = signInManager;
         }
 
-        [HttpGet]
-        [Route("users")]
+        [HttpGet, Route("users")]
         public async Task<ActionResult<User[]>> GetAsync()
         {
             var users = await _context.Users.AsNoTracking().ToArrayAsync();
             return Ok(users);
         }
 
-        [HttpPost]
-        [Route("register")]
+        [HttpPost, Route("register")]
         public async Task<IActionResult> RegisterAsync([FromBody] AuthenticationData data)
         {
             if (!ModelState.IsValid)
@@ -58,9 +52,8 @@ namespace UltraBugTracker.Authentication.Controllers
             return Ok();
 
         }
-
-        [HttpPost]      
-        [Route("login")]
+       
+        [HttpPost, Route("login")]
         public async Task<IActionResult> LoginAsync([FromBody] AuthenticationData data)
         {
 
@@ -78,8 +71,7 @@ namespace UltraBugTracker.Authentication.Controllers
             return Ok();
         }
 
-        [HttpPost]
-        [Route("logoff")]
+        [HttpPost, Route("logoff")]
         public async Task<IActionResult> LogoffAsync()
         {
             await _signInManager.SignOutAsync();

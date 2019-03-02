@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
-namespace UltraBugTracker.API
+namespace UBT.API
 {
     public class Program
     {

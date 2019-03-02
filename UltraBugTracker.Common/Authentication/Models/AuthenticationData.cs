@@ -1,4 +1,4 @@
-﻿namespace UltraBugTracker.Common.Authentication.Models
+﻿namespace UBT.Common.Authentication.Models
 {
     public class AuthenticationData
     {
